@@ -27,5 +27,12 @@ __global__ void sumMatrixOnGPU2D(float *MatA, float *MatB, float *MatC, int nx,
 }
 
 int main (int argc, char ** argv){
+
+    // Set up device
+    int dev = 0;
+    cudaDeviceProp deviceProp;
+    SAFE_CALL(cudaGetDeviceProperties(&deviceProp, dev), "Error device prop");
+    printf("Using Device %d: %s\n", dev, deviceProp.name);
+
     return 0;
 }
