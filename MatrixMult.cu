@@ -22,24 +22,19 @@ __global__ void multMatrixOnGPU2D(float *MatA, float *MatB, float *MatC, int nx,
     unsigned int ix = threadIdx.x + blockIdx.x * blockDim.x;
     unsigned int iy = threadIdx.y + blockIdx.y * blockDim.y;
 
-    // Posicion en toda la matriz de 1 dimesión 
-    unsigned int idx = iy * nx + ix;
+    unsigned int idx = ix * nx + iy;
 
     printf("idx: %u ix: %d iy %d: \n", idx, ix, iy);
 
-    if (ix < nx && iy < ny)
-    MatC[idx] = MatA[idx] + MatB[idx];
+    float auxiliar = 0.0;
 
-
-
-    /*for (i = 0; i < ny; i++) {
-        for (int j = 0; j < nx; j++) {
-            float sum = 0.0;
-            for (int k = 0; k < ny; k++)
-                sum = sum + h_A[i * nx + k] * h_B[k * nx + j];
-            hostRef[i * nx + j] = sum;
+    if (ix < nx && iy < ny){
+        for(int i = 0; i < ny ; i++){
+            auxiliar += MatA[ix * nx + i] * MatB[i * ny + iy];
         }
-    }*/
+    }
+
+    MatC[idx] = auxiliar;
 }
 
 void printM(float *ip, int nx, int ny){
