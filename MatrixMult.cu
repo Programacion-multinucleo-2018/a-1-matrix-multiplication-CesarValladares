@@ -80,7 +80,7 @@ int main (int argc, char ** argv){
     dim3 block(dimx, dimy);
     dim3 grid((nx + block.x - 1) / block.x, (ny + block.y - 1) / block.y);
 
-    int repetitions = 100;
+    int repetitions = 30;
     auto average = 0;
 
     for (int i = 0; i < repetitions; i++){

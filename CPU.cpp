@@ -51,7 +51,7 @@ int main(){
 
     int x = SIZEM;
 
-    int repeticiones = 100;
+    int repeticiones = 30;
     auto promedio = 0.0;
 
     for ( int i = 0 ; i < repeticiones ; i++){
