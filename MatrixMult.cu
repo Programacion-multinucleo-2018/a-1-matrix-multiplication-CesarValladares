@@ -36,27 +36,6 @@ void printM(float *ip, int nx, int ny){
 
 }
 
-void checkResult(float *hostRef, float *gpuRef, const int N)
-{
-    double epsilon = 1.0E-8;
-    bool match = 1;
-
-    for (int i = 0; i < N; i++)
-    {
-        if (abs(hostRef[i] - gpuRef[i]) > epsilon)
-        {
-            match = 0;
-            printf("host %f gpu %f\n", hostRef[i], gpuRef[i]);
-            break;
-        }
-    }
-
-    if (match)
-        printf("Arrays match.\n\n");
-    else
-        printf("Arrays do not match.\n\n");
-}
-
 int main (int argc, char ** argv){
 
     // Set up device
@@ -75,17 +54,15 @@ int main (int argc, char ** argv){
     printf("Matrix size: nx %d ny %d\n", nx, ny);
 
     // Apartar memoria 
-    float *h_A, *h_B, *hostRef, *gpuRef;
+    float *h_A, *h_B, *gpuRef;
     h_A = (float *)malloc(nBytes);
     h_B = (float *)malloc(nBytes);
-    hostRef = (float *)malloc(nBytes);
     gpuRef = (float *)malloc(nBytes);
 
     // Inicializar matrices
     fillMatrices(h_A, nxy);
     fillMatrices(h_B, nxy);
 
-    memset(hostRef, 0, nBytes);
     memset(gpuRef, 0, nBytes);
 
     // Apartar memoria en la GPU
@@ -125,9 +102,6 @@ int main (int argc, char ** argv){
     printM(gpuRef, nx, ny);
     printM(d_MatC, nx, ny);
 
-    // check device results
-    checkResult(hostRef, gpuRef, nxy);
-
     // free device global memory
     SAFE_CALL(cudaFree(d_MatA), "Error freeing memory");
     SAFE_CALL(cudaFree(d_MatB), "Error freeing memory");
@@ -136,7 +110,6 @@ int main (int argc, char ** argv){
     // free host memory
     free(h_A);
     free(h_B);
-    free(hostRef);
     free(gpuRef);
 
     // reset device
