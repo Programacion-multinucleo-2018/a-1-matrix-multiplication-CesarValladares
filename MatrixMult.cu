@@ -25,3 +25,7 @@ __global__ void sumMatrixOnGPU2D(float *MatA, float *MatB, float *MatC, int nx,
     if (ix < nx && iy < ny)
     MatC[idx] = MatA[idx] + MatB[idx];
 }
+
+int main (int argc, char ** argv){
+    return 0;
+}
