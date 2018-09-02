@@ -80,24 +80,31 @@ int main (int argc, char ** argv){
     dim3 block(dimx, dimy);
     dim3 grid((nx + block.x - 1) / block.x, (ny + block.y - 1) / block.y);
 
+    int repetitions = 100;
+    auto average = 0;
 
-    auto start_cpu =  chrono::high_resolution_clock::now();
-    multMatrixOnGPU2D<<<grid, block>>>(d_MatA, d_MatB, d_MatC, nx, ny);
-    SAFE_CALL(cudaDeviceSynchronize(), "Error executing kernel");
-    auto end_cpu =  chrono::high_resolution_clock::now();
+    for (int i = 0; i < repeticiones; i++){
+        auto start_cpu =  chrono::high_resolution_clock::now();
+        multMatrixOnGPU2D<<<grid, block>>>(d_MatA, d_MatB, d_MatC, nx, ny);
+        SAFE_CALL(cudaDeviceSynchronize(), "Error executing kernel");
+        auto end_cpu =  chrono::high_resolution_clock::now();
+        
+        chrono::duration<float, std::milli> duration_ms = end_cpu - start_cpu;
+        average += duration_ms.count();
+    }
 
-    chrono::duration<float, std::milli> duration_ms = end_cpu - start_cpu;
+    average /= repetitions;
 
-    printf("multMatrixOnGPU1D <<<(%d,%d), (%d,%d)>>> elapsed %f ms\n", grid.x,
+    printf("multMatrixOnGPU1D <<<(%d,%d), (%d,%d)>>> elapsed %f ms in %d repetitions\n", grid.x,
            grid.y,
-           block.x, block.y, duration_ms.count());
+           block.x, block.y, average, repetitions);
 
     // SAFE_CALL kernel error
     SAFE_CALL(cudaGetLastError(), "Error with last error");
 
     // copy kernel result back to host side
     SAFE_CALL(cudaMemcpy(gpuRef, d_MatC, nBytes, cudaMemcpyDeviceToHost), "Error copying d_MatC");
-    
+
     // free device global memory
     SAFE_CALL(cudaFree(d_MatA), "Error freeing memory");
     SAFE_CALL(cudaFree(d_MatB), "Error freeing memory");
