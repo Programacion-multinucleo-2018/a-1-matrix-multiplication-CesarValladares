@@ -95,7 +95,7 @@ int main (int argc, char ** argv){
 
     average /= repetitions;
 
-    printf("multMatrixOnGPU1D <<<(%d,%d), (%d,%d)>>> elapsed %f ms in %d repetitions\n", grid.x,
+    printf("multMatrixOnGPU1D <<<(%d,%d), (%d,%d)>>> elapsed %d ms in %d repetitions\n", grid.x,
            grid.y,
            block.x, block.y, average, repetitions);
 
