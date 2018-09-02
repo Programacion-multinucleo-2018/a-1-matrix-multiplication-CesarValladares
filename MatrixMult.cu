@@ -5,7 +5,7 @@
 
 using namespace std;
 
-#define SIZEM 4;
+#define SIZEM 500;
 
 void fillMatrices(float * ip, const int size){
 
@@ -24,8 +24,6 @@ __global__ void multMatrixOnGPU2D(float *MatA, float *MatB, float *MatC, int nx,
 
     unsigned int idx = ix * nx + iy;
 
-    printf("idx: %u ix: %d iy %d: \n", idx, ix, iy);
-
     float auxiliar = 0.0;
 
     if (ix < nx && iy < ny){
@@ -35,15 +33,6 @@ __global__ void multMatrixOnGPU2D(float *MatA, float *MatB, float *MatC, int nx,
     }
 
     MatC[idx] = auxiliar;
-}
-
-void printM(float *ip, int nx, int ny){
-
-    int size = nx * ny;
-    for (int i = 0; i < size ; i++){
-        printf (" %f ", ip[i]);
-    }printf("\n");
-
 }
 
 int main (int argc, char ** argv){
@@ -108,9 +97,7 @@ int main (int argc, char ** argv){
 
     // copy kernel result back to host side
     SAFE_CALL(cudaMemcpy(gpuRef, d_MatC, nBytes, cudaMemcpyDeviceToHost), "Error copying d_MatC");
-
-    printM(gpuRef, nx, ny);
-
+    
     // free device global memory
     SAFE_CALL(cudaFree(d_MatA), "Error freeing memory");
     SAFE_CALL(cudaFree(d_MatB), "Error freeing memory");
