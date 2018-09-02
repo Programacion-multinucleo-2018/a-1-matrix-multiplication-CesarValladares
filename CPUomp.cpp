@@ -7,7 +7,7 @@
 
 using namespace std;
 
-#define SIZEM 500;
+#define SIZEM 1000;
 
 void fillMatrices(float * ip, const int size){
 
