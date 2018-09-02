@@ -27,13 +27,34 @@ __global__ void multMatrixOnGPU2D(float *MatA, float *MatB, float *MatC, int nx,
     MatC[idx] = MatA[idx] + MatB[idx];
 }
 
-void printM(float *ip){
+void printM(float *ip, int nx, int ny){
 
-    int size = SIZEM * SIZEM;
-    for (int i = 0; u < size ; i++){
+    int size = nx * ny;
+    for (int i = 0; i < size ; i++){
         printf (" %f ", ip[i]);
     }printf("\n");
 
+}
+
+void checkResult(float *hostRef, float *gpuRef, const int N)
+{
+    double epsilon = 1.0E-8;
+    bool match = 1;
+
+    for (int i = 0; i < N; i++)
+    {
+        if (abs(hostRef[i] - gpuRef[i]) > epsilon)
+        {
+            match = 0;
+            printf("host %f gpu %f\n", hostRef[i], gpuRef[i]);
+            break;
+        }
+    }
+
+    if (match)
+        printf("Arrays match.\n\n");
+    else
+        printf("Arrays do not match.\n\n");
 }
 
 int main (int argc, char ** argv){
@@ -61,8 +82,8 @@ int main (int argc, char ** argv){
     gpuRef = (float *)malloc(nBytes);
 
     // Inicializar matrices
-    initialData(h_A, nxy);
-    initialData(h_B, nxy);
+    fillMatrices(h_A, nxy);
+    fillMatrices(h_B, nxy);
 
     memset(hostRef, 0, nBytes);
     memset(gpuRef, 0, nBytes);
@@ -77,12 +98,19 @@ int main (int argc, char ** argv){
     SAFE_CALL(cudaMemcpy(d_MatA, h_A, nBytes, cudaMemcpyHostToDevice), "Error copying d_MatA");
     SAFE_CALL(cudaMemcpy(d_MatB, h_B, nBytes, cudaMemcpyHostToDevice), "Error copying d_MatB");
 
-    start_cpu =  chrono::high_resolution_clock::now();
+    // Invocar al kernel del lado del host
+    int dimx = 64;
+    int dimy = 16;
+    dim3 block(dimx, dimy);
+    dim3 grid((nx + block.x - 1) / block.x, (ny + block.y - 1) / block.y);
+
+
+    auto start_cpu =  chrono::high_resolution_clock::now();
     multMatrixOnGPU2D<<<grid, block>>>(d_MatA, d_MatB, d_MatC, nx, ny);
     SAFE_CALL(cudaDeviceSynchronize(), "Error executing kernel");
-    end_cpu =  chrono::high_resolution_clock::now();
+    auto end_cpu =  chrono::high_resolution_clock::now();
 
-    duration_ms = end_cpu - start_cpu;
+    chrono::duration<float, std::milli> duration_ms = end_cpu - start_cpu;
 
     printf("multMatrixOnGPU1D <<<(%d,%d), (%d,%d)>>> elapsed %f ms\n", grid.x,
            grid.y,
