@@ -83,7 +83,7 @@ int main (int argc, char ** argv){
     int repetitions = 100;
     auto average = 0;
 
-    for (int i = 0; i < repeticiones; i++){
+    for (int i = 0; i < repetitions; i++){
         auto start_cpu =  chrono::high_resolution_clock::now();
         multMatrixOnGPU2D<<<grid, block>>>(d_MatA, d_MatB, d_MatC, nx, ny);
         SAFE_CALL(cudaDeviceSynchronize(), "Error executing kernel");
