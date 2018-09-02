@@ -20,10 +20,11 @@ void fillMatrices(float * ip, const int size){
 
 void MultFuncion(float * h_A, float * h_B, float * hostRef, int nx, int ny){
 
+    int i;
     //Mult(h_A, h_B, hostRef, nx);
     #pragma omp parallel for private(i) shared(h_A,h_B,hostRef)
 
-    for (int i = 0; i < ny; i++) {
+    for (i = 0; i < ny; i++) {
         for (int j = 0; j < nx; j++) {
             float sum = 0.0;
             for (int k = 0; k < ny; k++)
