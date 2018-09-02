@@ -18,10 +18,14 @@ void fillMatrices(float * ip, const int size){
 
 __global__ void multMatrixOnGPU2D(float *MatA, float *MatB, float *MatC, int nx,
     int ny)
-{
+{   
     unsigned int ix = threadIdx.x + blockIdx.x * blockDim.x;
     unsigned int iy = threadIdx.y + blockIdx.y * blockDim.y;
+
+    // Posicion en todo el arreglo
     unsigned int idx = iy * nx + ix;
+
+    printf("idx: %ui \n", idx);
 
     if (ix < nx && iy < ny)
     MatC[idx] = MatA[idx] + MatB[idx];
@@ -100,7 +104,6 @@ int main (int argc, char ** argv){
     SAFE_CALL(cudaMemcpy(gpuRef, d_MatC, nBytes, cudaMemcpyDeviceToHost), "Error copying d_MatC");
 
     printM(gpuRef, nx, ny);
-    printM(d_MatC, nx, ny);
 
     // free device global memory
     SAFE_CALL(cudaFree(d_MatA), "Error freeing memory");
