@@ -123,6 +123,7 @@ int main (int argc, char ** argv){
     SAFE_CALL(cudaMemcpy(gpuRef, d_MatC, nBytes, cudaMemcpyDeviceToHost), "Error copying d_MatC");
 
     printM(gpuRef, nx, ny);
+    printM(d_MatC, nx, ny);
 
     // check device results
     checkResult(hostRef, gpuRef, nxy);
