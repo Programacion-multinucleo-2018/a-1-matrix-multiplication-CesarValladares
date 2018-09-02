@@ -1,6 +1,7 @@
 #include <cuda_runtime.h>
 #include <cstdio>
 #include <chrono>
+#include "common.h"
 
 using namespace std;
 
@@ -33,6 +34,7 @@ int main (int argc, char ** argv){
     cudaDeviceProp deviceProp;
     SAFE_CALL(cudaGetDeviceProperties(&deviceProp, dev), "Error device prop");
     printf("Using Device %d: %s\n", dev, deviceProp.name);
+    SAFE_CALL(cudaSetDevice(dev), "Error setting device");
 
     return 0;
 }
