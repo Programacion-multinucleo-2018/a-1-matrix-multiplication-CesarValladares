@@ -75,15 +75,15 @@ int main (int argc, char ** argv){
     SAFE_CALL(cudaMemcpy(d_MatB, h_B, nBytes, cudaMemcpyHostToDevice), "Error copying d_MatB");
 
     // Invocar al kernel del lado del host
-    int dimx = 64;
+    int dimx = 16;
     int dimy = 16;
     dim3 block(dimx, dimy);
     dim3 grid((nx + block.x - 1) / block.x, (ny + block.y - 1) / block.y);
 
-    int repetitions = 1;
+    int repetitions = 30;
     auto average = 0;
 
-    //for (int i = 0; i < repetitions; i++){
+    for (int i = 0; i < repetitions; i++){
         auto start_cpu =  chrono::high_resolution_clock::now();
         multMatrixOnGPU2D<<<grid, block>>>(d_MatA, d_MatB, d_MatC, nx, ny);
         SAFE_CALL(cudaDeviceSynchronize(), "Error executing kernel");
@@ -91,7 +91,7 @@ int main (int argc, char ** argv){
         
         chrono::duration<float, std::milli> duration_ms = end_cpu - start_cpu;
         average += duration_ms.count();
-    //}
+    }
 
     average /= repetitions;
 
