@@ -75,7 +75,7 @@ int main (int argc, char ** argv){
     SAFE_CALL(cudaMemcpy(d_MatB, h_B, nBytes, cudaMemcpyHostToDevice), "Error copying d_MatB");
 
     // Invocar al kernel del lado del host
-    int dimx = 32;
+    int dimx = 30;
     int dimy = 16;
     dim3 block(dimx, dimy);
     dim3 grid((nx + block.x - 1) / block.x, (ny + block.y - 1) / block.y);
