@@ -5,9 +5,9 @@
 
 using namespace std;
 
-#define SIZEM 4000;
+#define SIZEM 1000;
 
-void fillMatrices(float * ip, const int size){
+void fillMatrices(int * ip, const int size){
 
     int i; 
 
@@ -16,11 +16,11 @@ void fillMatrices(float * ip, const int size){
     }    
 }
 
-void Mult(float * h_A, float * h_B, float * hostRef, int nx, int ny){
+void Mult(int * h_A, int * h_B, int * hostRef, int nx, int ny){
     
     for (int i = 0; i < ny; i++) {
         for (int j = 0; j < nx; j++) {
-            float sum = 0.0;
+            int sum = 0;
             for (int k = 0; k < ny; k++)
                 sum = sum + h_A[i * nx + k] * h_B[k * nx + j];
             hostRef[i * nx + j] = sum;
@@ -40,10 +40,10 @@ int main(){
     //printf("Matrix size: nx %d ny %d\n", nx, ny);
 
     //malloc
-    float *h_A, *h_B, *hostRef;
-    h_A = (float*)malloc(nBytes);
-    h_B = (float*)malloc(nBytes);
-    hostRef = (float*)malloc(nBytes);
+    int *h_A, *h_B, *hostRef;
+    h_A = (int*)malloc(nBytes);
+    h_B = (int*)malloc(nBytes);
+    hostRef = (int*)malloc(nBytes);
 
     //inicializar 
     fillMatrices(h_A, nxy);

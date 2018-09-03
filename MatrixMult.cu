@@ -5,9 +5,9 @@
 
 using namespace std;
 
-#define SIZEM 4000;
+#define SIZEM 1000;
 
-void fillMatrices(float * ip, const int size){
+void fillMatrices(int * ip, const int size){
 
     int i; 
 
@@ -16,7 +16,7 @@ void fillMatrices(float * ip, const int size){
     }    
 }
 
-__global__ void multMatrixOnGPU2D(float *MatA, float *MatB, float *MatC, int nx,
+__global__ void multMatrixOnGPU2D(int *MatA, int *MatB, int *MatC, int nx,
     int ny)
 {   
     unsigned int ix = threadIdx.x + blockIdx.x * blockDim.x;
@@ -24,7 +24,7 @@ __global__ void multMatrixOnGPU2D(float *MatA, float *MatB, float *MatC, int nx,
 
     unsigned int idx = ix * nx + iy;
 
-    float auxiliar = 0.0;
+    int auxiliar = 0;
 
     if (ix < nx && iy < ny){
         for(int i = 0; i < ny ; i++){
@@ -49,14 +49,14 @@ int main (int argc, char ** argv){
     int ny = SIZEM;
 
     int nxy = nx * ny;
-    int nBytes = nxy * sizeof(float);
+    int nBytes = nxy * sizeof(int);
     printf("Matrix size: nx %d ny %d\n", nx, ny);
 
     // Apartar memoria 
-    float *h_A, *h_B, *gpuRef;
-    h_A = (float *)malloc(nBytes);
-    h_B = (float *)malloc(nBytes);
-    gpuRef = (float *)malloc(nBytes);
+    int *h_A, *h_B, *gpuRef;
+    h_A = (int *)malloc(nBytes);
+    h_B = (int *)malloc(nBytes);
+    gpuRef = (int *)malloc(nBytes);
 
     // Inicializar matrices
     fillMatrices(h_A, nxy);
@@ -65,7 +65,7 @@ int main (int argc, char ** argv){
     memset(gpuRef, 0, nBytes);
 
     // Apartar memoria en la GPU
-    float *d_MatA, *d_MatB, *d_MatC;
+    int *d_MatA, *d_MatB, *d_MatC;
     SAFE_CALL(cudaMalloc((void **)&d_MatA, nBytes), "Error allocating d_MatA");
     SAFE_CALL(cudaMalloc((void **)&d_MatB, nBytes), "Error allocating d_MatB");
     SAFE_CALL(cudaMalloc((void **)&d_MatC, nBytes), "Error allocating d_MatC");
