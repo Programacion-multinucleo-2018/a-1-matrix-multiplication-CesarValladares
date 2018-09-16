@@ -27,3 +27,10 @@ Rubric:
 5. The report file has tables with the performance data for the different configurations, as well as for the speedup obtained.
 6. The report file has the computer's characteristics, as well as the conclusions.
 
+**NOTES**
+
+1. The report is missing the test results for the 2000x2000 and 4000x4000 matrices.
+2. I assume that the *GPU 16/16* and *GPU 16/32* refers to the block dimensions for x and y, respectively.
+3. What were the PC specs where you ran the tests? CPU? GPU?
+
+**Grade: 90**
